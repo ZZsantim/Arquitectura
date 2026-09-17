@@ -14,22 +14,16 @@ class GetUserUsecase:
     user_repo: UserRepo
 
     async def execute(self, user_id: str) -> UserResponse:
-        """Gets a user by ID.
-
-        Args:
-            user_id: The ID of the user to get.
-
-        Returns:
-            UserResponse: The user data.
-
-        Raises:
-            InvalidIDError: If the user ID format is invalid.
-            UserNotFoundError: If the user is not found.
-        """
+        """Gets a user by ID."""
         id_value = ID.from_string(user_id)
 
         user = await self.user_repo.get_by_id(id_value)
         if not user:
             raise UserNotFoundError(f"User with ID {user_id} not found")
 
-        return UserResponse(id=str(user.id), name=user.name, email=user.email.value)
+        return UserResponse(
+            id=str(user.id),
+            name=user.name,
+            email=user.email.value,
+            roles=[role.name for role in user.roles],
+        )

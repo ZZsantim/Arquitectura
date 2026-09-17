@@ -3,9 +3,13 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException
 
 from app.core.dtos.user import CreateUserRequest, UpdateUser, UserResponse
-from app.core.exceptions import InvalidUserError, UserAlreadyExistsError, UserNotFoundError
-from app.core.value_objects.id import InvalidIDError
+from app.core.exceptions import InvalidUserError, RoleNotFoundError, UserAlreadyExistsError, UserNotFoundError
 from app.core.value_objects.email import InvalidEmailError
+from app.core.value_objects.id import ID, InvalidIDError
+from app.infra.api.dependencies.usecases.role import (
+    AssignRoleToUser as AssignRoleToUserUsecase,
+    RemoveRoleFromUser as RemoveRoleFromUserUsecase,
+)
 from app.infra.api.dependencies.usecases.user import (
     CreateUser as CreateUserUsecase,
     DeleteUser as DeleteUserUsecase,
@@ -82,3 +86,47 @@ async def patch(user_id: UUID, dto: UpdateUser, usecase: UpdateUserUsecase) -> U
         raise HTTPException(status_code=404, detail="User not found")
     except (InvalidUserError, InvalidEmailError) as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post(
+    "/{user_id}/roles/{role_id}",
+    status_code=204,
+    summary="Assign role to user",
+    responses={
+        204: {"description": "Role assigned successfully"},
+        404: {"description": "User or role not found"},
+    },
+)
+async def assign_role(user_id: UUID, role_id: UUID, usecase: AssignRoleToUserUsecase) -> None:
+    try:
+        await usecase.execute(str(user_id), str(role_id))
+    except (UserNotFoundError, RoleNotFoundError):
+        raise HTTPException(status_code=404, detail="User or role not found")
+
+
+@router.delete(
+    "/{user_id}/roles/{role_id}",
+    status_code=204,
+    summary="Remove role from user",
+    responses={
+        204: {"description": "Role removed successfully"},
+        404: {"description": "User or role not found"},
+    },
+)
+async def remove_role(user_id: UUID, role_id: UUID, usecase: RemoveRoleFromUserUsecase) -> None:
+    try:
+        await usecase.execute(str(user_id), str(role_id))
+    except (UserNotFoundError, RoleNotFoundError):
+        raise HTTPException(status_code=404, detail="User or role not found")
+
+
+@router.get(
+    "/{user_id}/roles",
+    summary="Lists user roles",
+    responses={200: {"description": "User roles found"}, 404: {"description": "User not found"}},
+)
+async def list_roles(user_id: UUID, usecase: AssignRoleToUserUsecase) -> list[str]:
+    user = await usecase.uow.user_repo.get_by_id(ID.from_string(str(user_id)))
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return [role.name for role in user.roles]

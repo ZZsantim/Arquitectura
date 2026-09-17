@@ -16,20 +16,7 @@ class UpdateUserUsecase:
     uow: UserUnitOfWork
 
     async def execute(self, user_id: str, dto: UpdateUser) -> UserResponse:
-        """Updates a user.
-
-        Args:
-            user_id: The ID of the user to update.
-            dto: The data to update the user with.
-
-        Returns:
-            UserResponse: The updated user data.
-
-        Raises:
-            InvalidIDError: If the user ID format is invalid.
-            InvalidEmailError: If the email format is invalid.
-            UserNotFoundError: If the user is not found.
-        """
+        """Updates a user."""
         id_value = ID.from_string(user_id)
 
         async with self.uow:
@@ -43,6 +30,7 @@ class UpdateUserUsecase:
                     name=dto.name or existing_user.name,
                     email=Email(dto.email) if dto.email else existing_user.email,
                     password=existing_user.password,
+                    roles=existing_user.roles,
                 )
             )
 
@@ -54,4 +42,5 @@ class UpdateUserUsecase:
                 id=str(updated_user.id),
                 name=updated_user.name,
                 email=updated_user.email.value,
+                roles=[role.name for role in updated_user.roles],
             )

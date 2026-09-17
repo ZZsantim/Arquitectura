@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 
@@ -14,6 +14,7 @@ class UserResponse:
     id: str
     name: str
     email: str
+    roles: list[str] = field(default_factory=list)
 
 
 @dataclass(frozen=True)

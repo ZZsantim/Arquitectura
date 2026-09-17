@@ -1,8 +1,9 @@
 from typing import Optional, Protocol
 
+from app.core.entities.role import Role
 from app.core.entities.user import User
-from app.core.value_objects.email import Email
 from app.core.ports.unit_of_work import UnitOfWork
+from app.core.value_objects.email import Email
 from app.core.value_objects.id import ID
 
 
@@ -62,7 +63,21 @@ class UserRepo(Protocol):
         ...
 
 
+class UserRoleRepo(Protocol):
+    async def assign_role(self, user_id: ID, role_id: ID) -> None: ...
+
+    async def remove_role(self, user_id: ID, role_id: ID) -> None: ...
+
+    async def list_roles(self, user_id: ID) -> list[Role]: ...
+
+
 class UserUnitOfWork(UnitOfWork, Protocol):
     """Unit of Work protocol for user operations."""
 
     user_repo: UserRepo
+
+
+class UserRoleUnitOfWork(UnitOfWork, Protocol):
+    user_repo: UserRepo
+    role_repo: "RoleRepo"
+    user_role_repo: UserRoleRepo
