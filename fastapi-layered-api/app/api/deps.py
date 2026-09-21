@@ -17,7 +17,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.exceptions import UserNotFoundError
 from app.db.session import get_db
 from app.models.user import User
+from app.repositories.notification_repository import NotificationRepository
 from app.repositories.user_repository import UserRepository
+from app.services.notification_service import NotificationService
 from app.services.user_service import UserService
 
 # `tokenUrl` apunta al endpoint de login; esto es lo que hace que
@@ -33,6 +35,18 @@ def get_user_service(
     repository: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> UserService:
     return UserService(repository)
+
+
+def get_notification_repository(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> NotificationRepository:
+    return NotificationRepository(db)
+
+
+def get_notification_service(
+    repository: Annotated[NotificationRepository, Depends(get_notification_repository)],
+) -> NotificationService:
+    return NotificationService(repository)
 
 
 async def get_current_user(

@@ -29,3 +29,7 @@ class InvalidCredentialsError(DomainError):
 
 class InactiveUserError(DomainError):
     """El usuario existe pero está deshabilitado."""
+
+
+class NotificationNotFoundError(DomainError):
+    """La notificación solicitada no existe o no pertenece al usuario autenticado."""
