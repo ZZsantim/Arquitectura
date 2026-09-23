@@ -51,6 +51,28 @@ class NotificationRepository:
         total_result = await self._session.execute(total_query)
         return items_result.scalars().all(), total_result.scalar_one()
 
+    async def list_public(
+        self,
+        *,
+        offset: int = 0,
+        limit: int = 20,
+    ) -> tuple[Sequence[Notification], int]:
+        """Lista únicamente anuncios marcados como públicos."""
+        query = (
+            select(Notification)
+            .where(Notification.is_public.is_(True))
+            .order_by(Notification.created_at.desc())
+            .offset(offset)
+            .limit(limit)
+        )
+        total_query = select(func.count()).select_from(Notification).where(
+            Notification.is_public.is_(True)
+        )
+
+        items_result = await self._session.execute(query)
+        total_result = await self._session.execute(total_query)
+        return items_result.scalars().all(), total_result.scalar_one()
+
     async def mark_as_read(self, notification: Notification) -> Notification:
         notification.is_read = True
         await self._session.flush()

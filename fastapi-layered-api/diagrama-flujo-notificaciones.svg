@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .title { font: bold 26px sans-serif; fill: #0f172a; }
+      .head { font: bold 15px sans-serif; fill: #fff; text-anchor: middle; }
+      .text { font: 14px sans-serif; fill: #0f172a; text-anchor: middle; }
+      .box { stroke: #334155; stroke-width: 2; rx: 10; }
+      .line { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #64748b; stroke-width: 2; stroke-dasharray: 8 6; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1400" height="900" fill="#f8fafc"/>
+  <text x="700" y="42" class="title" text-anchor="middle">Flujo visual de notificaciones</text>
+
+  <rect x="35" y="75" width="180" height="52" class="box" fill="#2563eb"/><text x="125" y="108" class="head">Cliente</text>
+  <rect x="245" y="75" width="180" height="52" class="box" fill="#2563eb"/><text x="335" y="108" class="head">FastAPI</text>
+  <rect x="455" y="75" width="180" height="52" class="box" fill="#16a34a"/><text x="545" y="108" class="head">Router</text>
+  <rect x="665" y="75" width="190" height="52" class="box" fill="#7c3aed"/><text x="760" y="108" class="head">Service</text>
+  <rect x="885" y="75" width="220" height="52" class="box" fill="#db2777"/><text x="995" y="108" class="head">Repository</text>
+  <rect x="1135" y="75" width="220" height="52" class="box" fill="#ea580c"/><text x="1245" y="108" class="head">Base de datos</text>
+
+  <path d="M125 127 V850 M335 127 V850 M545 127 V850 M760 127 V850 M995 127 V850 M1245 127 V850" class="dash"/>
+
+  <rect x="20" y="165" width="520" height="330" class="box" fill="#eff6ff"/>
+  <text x="280" y="195" class="text" font-weight="bold">A. Consulta pública (sin token)</text>
+  <path d="M125 225 H335" class="line"/><text x="230" y="215" class="text">GET /notifications/public</text>
+  <path d="M335 265 H545" class="line"/><text x="440" y="255" class="text">resolver Depends</text>
+  <path d="M545 305 H760" class="line"/><text x="650" y="295" class="text">list_public_announcements()</text>
+  <path d="M760 345 H995" class="line"/><text x="875" y="335" class="text">list_public()</text>
+  <path d="M995 385 H1245" class="line"/><text x="1120" y="375" class="text">WHERE is_public = TRUE</text>
+  <path d="M1245 425 H995" class="line"/><text x="1120" y="415" class="text">filas públicas + total</text>
+  <path d="M995 465 H760" class="line"/><text x="875" y="455" class="text">items, total</text>
+  <path d="M760 505 H545" class="line"/><text x="650" y="495" class="text">schema sin user_id</text>
+
+  <rect x="590" y="165" width="790" height="330" class="box" fill="#f0fdf4"/>
+  <text x="985" y="195" class="text" font-weight="bold">B. Operación privada (con token)</text>
+  <path d="M125 565 H335" class="line"/><text x="230" y="555" class="text">POST / GET / PATCH / DELETE + Bearer JWT</text>
+  <path d="M335 605 H545" class="line"/><text x="440" y="595" class="text">extraer y validar token</text>
+  <path d="M545 645 H760" class="line"/><text x="650" y="635" class="text">caso de uso + current_user.id</text>
+  <path d="M760 685 H995" class="line"/><text x="875" y="675" class="text">filtrar por user_id</text>
+  <path d="M995 725 H1245" class="line"/><text x="1120" y="715" class="text">SELECT / UPDATE / DELETE</text>
+  <path d="M1245 765 H995" class="line"/><text x="1120" y="755" class="text">resultado</text>
+  <path d="M995 805 H760" class="line"/><text x="875" y="795" class="text">entidad o error</text>
+  <path d="M760 845 H545" class="line"/><text x="650" y="835" class="text">respuesta HTTP + commit/rollback</text>
+
+  <text x="700" y="885" class="text">Privado: el usuario solo puede acceder a sus propias notificaciones.</text>
+</svg>

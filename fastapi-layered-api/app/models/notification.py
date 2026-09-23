@@ -26,6 +26,8 @@ class Notification(Base):
     )
     message: Mapped[str] = mapped_column(String(500), nullable=False)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    # Anuncios/broadcasts que cualquiera puede consultar sin autenticarse.
+    is_public: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -33,4 +35,7 @@ class Notification(Base):
     user: Mapped["User"] = relationship("User")
 
     def __repr__(self) -> str:  # pragma: no cover - solo utilidad de debug
-        return f"<Notification id={self.id} user_id={self.user_id} is_read={self.is_read}>"
+        return (
+            f"<Notification id={self.id} user_id={self.user_id} "
+            f"is_read={self.is_read} is_public={self.is_public}>"
+        )

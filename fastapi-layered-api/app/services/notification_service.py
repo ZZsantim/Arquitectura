@@ -22,6 +22,15 @@ class NotificationService:
         )
         return list(notifications), total
 
+    async def list_public_announcements(self, *, page: int, page_size: int):
+        """Consulta pública sin identificador de usuario."""
+        offset = (page - 1) * page_size
+        notifications, total = await self._repository.list_public(
+            offset=offset,
+            limit=page_size,
+        )
+        return list(notifications), total
+
     async def mark_as_read(self, notification_id: int, user_id: int):
         notification = await self._repository.get_by_id_for_user(notification_id, user_id)
         if notification is None:

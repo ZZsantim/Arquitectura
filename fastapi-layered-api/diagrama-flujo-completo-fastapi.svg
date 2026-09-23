@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1500" viewBox="0 0 1500 1500">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L10,3 L0,6 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .title { font: bold 28px sans-serif; fill: #0f172a; }
+      .section { font: bold 19px sans-serif; fill: #1e293b; }
+      .text { font: 15px sans-serif; fill: #0f172a; text-anchor: middle; }
+      .small { font: 13px sans-serif; fill: #334155; text-anchor: middle; }
+      .box { stroke: #334155; stroke-width: 2; rx: 12; }
+      .line { stroke: #334155; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+      .dashed { stroke: #64748b; stroke-width: 2; stroke-dasharray: 8 6; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1500" height="1500" fill="#f8fafc"/>
+  <text x="750" y="42" class="title" text-anchor="middle">Flujo completo de FastAPI — fastapi-layered-api</text>
+
+  <text x="750" y="82" class="section" text-anchor="middle">1. Arranque y ensamblaje de la aplicación</text>
+  <rect x="60" y="105" width="220" height="72" class="box" fill="#dbeafe"/>
+  <text x="170" y="136" class="text">Uvicorn</text><text x="170" y="160" class="small">app.main:app</text>
+  <rect x="350" y="105" width="250" height="72" class="box" fill="#bfdbfe"/>
+  <text x="475" y="136" class="text">Settings</text><text x="475" y="160" class="small">.env + variables de entorno</text>
+  <rect x="670" y="105" width="250" height="72" class="box" fill="#bfdbfe"/>
+  <text x="795" y="136" class="text">create_application()</text><text x="795" y="160" class="small">FastAPI + middleware</text>
+  <rect x="990" y="105" width="250" height="72" class="box" fill="#bfdbfe"/>
+  <text x="1115" y="136" class="text">api.v1.api</text><text x="1115" y="160" class="small">include_router()</text>
+  <rect x="1310" y="105" width="130" height="72" class="box" fill="#fed7aa"/>
+  <text x="1375" y="136" class="text">Lifespan</text><text x="1375" y="160" class="small">DB schema</text>
+  <path d="M280 141 H350 M600 141 H670 M920 141 H990 M1240 141 H1310" class="line"/>
+
+  <text x="750" y="235" class="section" text-anchor="middle">2. Petición HTTP y selección del endpoint</text>
+  <rect x="60" y="260" width="220" height="78" class="box" fill="#dbeafe"/>
+  <text x="170" y="293" class="text">Cliente</text><text x="170" y="318" class="small">HTTP / Swagger / ReDoc</text>
+  <rect x="350" y="260" width="250" height="78" class="box" fill="#c7d2fe"/>
+  <text x="475" y="293" class="text">FastAPI / Starlette</text><text x="475" y="318" class="small">ASGI + middleware</text>
+  <rect x="670" y="260" width="250" height="78" class="box" fill="#dcfce7"/>
+  <text x="795" y="293" class="text">Router v1</text><text x="795" y="318" class="small">auth / users / notifications</text>
+  <rect x="990" y="260" width="250" height="78" class="box" fill="#fef3c7"/>
+  <text x="1115" y="293" class="text">Pydantic</text><text x="1115" y="318" class="small">path, query y body</text>
+  <rect x="1310" y="260" width="130" height="78" class="box" fill="#fee2e2"/>
+  <text x="1375" y="293" class="text">Error 422</text><text x="1375" y="318" class="small">si no valida</text>
+  <path d="M170 177 V230 H475 V260 M475 338 H795 M795 338 H1115" class="line"/>
+  <path d="M1115 299 H1310" class="dashed"/>
+
+  <text x="750" y="395" class="section" text-anchor="middle">3. Dependencias FastAPI</text>
+  <rect x="80" y="420" width="260" height="78" class="box" fill="#fef3c7"/>
+  <text x="210" y="452" class="text">get_db()</text><text x="210" y="477" class="small">AsyncSession por request</text>
+  <rect x="410" y="420" width="260" height="78" class="box" fill="#fef3c7"/>
+  <text x="540" y="452" class="text">Repositories</text><text x="540" y="477" class="small">User / Notification</text>
+  <rect x="740" y="420" width="260" height="78" class="box" fill="#fef3c7"/>
+  <text x="870" y="452" class="text">Services</text><text x="870" y="477" class="small">User / Notification</text>
+  <rect x="1070" y="420" width="260" height="78" class="box" fill="#fee2e2"/>
+  <text x="1200" y="452" class="text">Auth opcional o JWT</text><text x="1200" y="477" class="small">get_current_active_user</text>
+  <path d="M795 338 V380 H210 V420 M210 498 H540 M540 498 H870 M870 498 H1200" class="line"/>
+
+  <text x="750" y="555" class="section" text-anchor="middle">4. Autenticación (solo endpoints protegidos)</text>
+  <rect x="90" y="580" width="250" height="78" class="box" fill="#fee2e2"/>
+  <text x="215" y="612" class="text">OAuth2PasswordBearer</text><text x="215" y="637" class="small">lee Authorization: Bearer</text>
+  <rect x="400" y="580" width="250" height="78" class="box" fill="#fee2e2"/>
+  <text x="525" y="612" class="text">decode_access_token</text><text x="525" y="637" class="small">firma, algoritmo, exp</text>
+  <rect x="710" y="580" width="250" height="78" class="box" fill="#fee2e2"/>
+  <text x="835" y="612" class="text">UserService</text><text x="835" y="637" class="small">busca usuario por sub</text>
+  <rect x="1020" y="580" width="250" height="78" class="box" fill="#fee2e2"/>
+  <text x="1145" y="612" class="text">Usuario activo</text><text x="1145" y="637" class="small">o respuesta 401/403</text>
+  <path d="M1200 498 V550 H215 V580 M340 619 H400 M650 619 H710 M960 619 H1020" class="line"/>
+  <path d="M1145 658 V700 H870 V730" class="line"/>
+  <text x="1040" y="692" class="small">continúa al caso de uso</text>
+
+  <text x="750" y="735" class="section" text-anchor="middle">5. Lógica de negocio y persistencia</text>
+  <rect x="90" y="760" width="250" height="82" class="box" fill="#ede9fe"/>
+  <text x="215" y="794" class="text">Router</text><text x="215" y="819" class="small">invoca el servicio</text>
+  <rect x="400" y="760" width="250" height="82" class="box" fill="#ede9fe"/>
+  <text x="525" y="794" class="text">Service</text><text x="525" y="819" class="small">reglas de negocio</text>
+  <rect x="710" y="760" width="250" height="82" class="box" fill="#fce7f3"/>
+  <text x="835" y="794" class="text">Repository</text><text x="835" y="819" class="small">select / insert / update</text>
+  <rect x="1020" y="760" width="250" height="82" class="box" fill="#ffedd5"/>
+  <text x="1145" y="794" class="text">SQLAlchemy ORM</text><text x="1145" y="819" class="small">User / Notification</text>
+  <rect x="1310" y="760" width="130" height="82" class="box" fill="#fed7aa"/>
+  <text x="1375" y="794" class="text">DB</text><text x="1375" y="819" class="small">SQLite async</text>
+  <path d="M215 842 V880 H525 V842 M650 801 H710 M960 801 H1020 M1270 801 H1310" class="line"/>
+
+  <text x="750" y="930" class="section" text-anchor="middle">6. Casos de uso cubiertos</text>
+  <rect x="80" y="955" width="300" height="90" class="box" fill="#dcfce7"/>
+  <text x="230" y="990" class="text">Auth</text><text x="230" y="1016" class="small">register / login / JWT</text>
+  <rect x="440" y="955" width="300" height="90" class="box" fill="#dcfce7"/>
+  <text x="590" y="990" class="text">Users</text><text x="590" y="1016" class="small">me / list / update / delete</text>
+  <rect x="800" y="955" width="300" height="90" class="box" fill="#dcfce7"/>
+  <text x="950" y="990" class="text">Notifications privadas</text><text x="950" y="1016" class="small">crear / listar / leer / borrar</text>
+  <rect x="1160" y="955" width="280" height="90" class="box" fill="#dcfce7"/>
+  <text x="1300" y="990" class="text">Anuncios públicos</text><text x="1300" y="1016" class="small">listar sin token</text>
+  <path d="M525 842 V900 H230 V955 M525 900 H590 V955 M835 842 V900 H950 V955 M835 900 H1300 V955" class="line"/>
+
+  <text x="750" y="1125" class="section" text-anchor="middle">7. Respuesta, transacción y cierre</text>
+  <rect x="100" y="1150" width="270" height="82" class="box" fill="#fef3c7"/>
+  <text x="235" y="1184" class="text">Response model</text><text x="235" y="1209" class="small">Pydantic serializa salida</text>
+  <rect x="450" y="1150" width="270" height="82" class="box" fill="#dbeafe"/>
+  <text x="585" y="1184" class="text">HTTP response</text><text x="585" y="1209" class="small">200 / 201 / 204 / error</text>
+  <rect x="800" y="1150" width="270" height="82" class="box" fill="#dcfce7"/>
+  <text x="935" y="1184" class="text">Sin excepción</text><text x="935" y="1209" class="small">COMMIT</text>
+  <rect x="1150" y="1150" width="270" height="82" class="box" fill="#fee2e2"/>
+  <text x="1285" y="1184" class="text">Con excepción</text><text x="1285" y="1209" class="small">ROLLBACK + error</text>
+  <path d="M1145 842 V1080 H235 V1150 M370 1191 H450 M720 1191 H935 M720 1191 H1285" class="line"/>
+  <path d="M935 1232 V1280 H585 V1320 M1285 1232 V1280 H585 V1320" class="line"/>
+  <rect x="450" y="1320" width="270" height="82" class="box" fill="#dbeafe"/>
+  <text x="585" y="1354" class="text">Cerrar AsyncSession</text><text x="585" y="1379" class="small">liberar conexión</text>
+  <path d="M585 1402 V1440 H170 V1465 M585 1440 H1330 V1465" class="line"/>
+  <text x="170" y="1488" class="small">Cliente recibe respuesta</text>
+  <text x="1330" y="1488" class="small">Lifespan dispose al apagar</text>
+</svg>

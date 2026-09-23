@@ -1,11 +1,40 @@
 """Tests para el recurso Notification."""
 
 from httpx import AsyncClient
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models.notification import Notification
 
 
 async def test_post_notification_requires_auth(client: AsyncClient) -> None:
     response = await client.post("/api/v1/notifications", json={"message": "Hola"})
     assert response.status_code == 401
+
+
+async def test_public_announcements_do_not_require_auth(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    announcement = Notification(
+        user_id=1,
+        message="Mantenimiento programado",
+        is_public=True,
+    )
+    private = Notification(
+        user_id=1,
+        message="Notificación privada",
+        is_public=False,
+    )
+    db_session.add_all([announcement, private])
+    await db_session.flush()
+
+    response = await client.get("/api/v1/notifications/public")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] == 1
+    assert len(body["items"]) == 1
+    assert body["items"][0]["message"] == "Mantenimiento programado"
+    assert "user_id" not in body["items"][0]
 
 
 async def test_create_and_list_notification(client: AsyncClient, user_payload: dict) -> None:

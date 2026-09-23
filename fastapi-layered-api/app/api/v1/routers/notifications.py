@@ -1,9 +1,4 @@
-"""
-Router: Notificaciones.
-
-Cada endpoint requiere que el usuario esté autenticado y solo puede operar
-sobre sus propias notificaciones.
-"""
+"""Router: Notificaciones públicas y privadas del usuario autenticado."""
 
 from typing import Annotated, Optional
 
@@ -13,10 +8,38 @@ from app.api.deps import get_current_active_user, get_notification_service
 from app.core.exceptions import NotificationNotFoundError
 from app.models.user import User
 from app.schemas.common import ErrorResponse
-from app.schemas.notification import NotificationCreate, NotificationListResponse, NotificationPublic
+from app.schemas.notification import (
+    NotificationAnnouncementListResponse,
+    NotificationCreate,
+    NotificationListResponse,
+    NotificationPublic,
+)
 from app.services.notification_service import NotificationService
 
 router = APIRouter(prefix="/notifications", tags=["notifications"])
+
+
+@router.get(
+    "/public",
+    response_model=NotificationAnnouncementListResponse,
+    summary="Consultar anuncios públicos (sin autenticación)",
+)
+async def list_public_announcements(
+    service: Annotated[NotificationService, Depends(get_notification_service)],
+    page: Annotated[int, Query(ge=1, description="Número de página (1-indexado)")] = 1,
+    page_size: Annotated[int, Query(ge=1, le=100, description="Tamaño de página (máx. 100)")] = 20,
+) -> NotificationAnnouncementListResponse:
+    """Devuelve solo anuncios generales marcados como públicos."""
+    notifications, total = await service.list_public_announcements(
+        page=page,
+        page_size=page_size,
+    )
+    return NotificationAnnouncementListResponse(
+        items=notifications,
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
 @router.post(
